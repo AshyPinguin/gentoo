@@ -1,0 +1,77 @@
+From 95c94d84e55d73ae932e7c448ce28390b08d7052 Mon Sep 17 00:00:00 2001
+From: AshyPinguin <pinguinlars1105+gentoo@gmail.com>
+Date: Sat, 23 May 2026 18:03:58 +0000
+Subject: [PATCH] build: Only enable -Werror for debug builds
+
+This is an updated patch for the patch in https://github.com/raspberrypi/utils/pull/69 which stated:
+
+> -Werror is very unhelpful for distributions and end users as newer
+> compilers will raise warnings that the maintainers may not see. The
+> warnings should get reported upstream, but they shouldn't block users
+> from using the software.
+>
+> Rather than drop the flag entirely, I have enabled it only for debug
+> builds, e.g. -DCMAKE_BUILD_TYPE=Debug.
+
+Signed-off-by: AshyPinguin <pinguinlars1105+gentoo@gmail.com>
+---
+ dtmerge/CMakeLists.txt  | 2 +-
+ eeptools/CMakeLists.txt | 2 +-
+ pinctrl/CMakeLists.txt  | 2 +-
+ vclog/CMakeLists.txt    | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/dtmerge/CMakeLists.txt b/dtmerge/CMakeLists.txt
+index ef73e92..4cb86ce 100644
+--- a/dtmerge/CMakeLists.txt
++++ b/dtmerge/CMakeLists.txt
+@@ -5,7 +5,7 @@ include(GNUInstallDirs)
+ #set project name
+ project(dtmerge)
+ 
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror")
++add_compile_options(-Wall -Wextra $<$<CONFIG:Debug>:-Werror>)
+ 
+ if (CMAKE_COMPILER_IS_GNUCC)
+    add_definitions (-ffunction-sections)
+diff --git a/eeptools/CMakeLists.txt b/eeptools/CMakeLists.txt
+index 3438255..90fc284 100644
+--- a/eeptools/CMakeLists.txt
++++ b/eeptools/CMakeLists.txt
+@@ -5,7 +5,7 @@ include(GNUInstallDirs)
+ #set project name
+ project(eeptools)
+ 
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror")
++add_compile_options(-Wall -Wextra $<$<CONFIG:Debug>:-Werror>)
+ 
+ if (CMAKE_COMPILER_IS_GNUCC)
+    add_definitions (-ffunction-sections)
+diff --git a/pinctrl/CMakeLists.txt b/pinctrl/CMakeLists.txt
+index 23cccd9..48b301b 100644
+--- a/pinctrl/CMakeLists.txt
++++ b/pinctrl/CMakeLists.txt
+@@ -1,7 +1,7 @@
+ cmake_minimum_required(VERSION 3.10...3.27)
+ include(GNUInstallDirs)
+ 
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror")
++add_compile_options(-Wall -Wextra $<$<CONFIG:Debug>:-Werror>)
+ 
+ #set project name
+ project(pinctrl)
+diff --git a/vclog/CMakeLists.txt b/vclog/CMakeLists.txt
+index 611f9dc..dbd99bd 100644
+--- a/vclog/CMakeLists.txt
++++ b/vclog/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ cmake_minimum_required(VERSION 3.10...3.27)
+ 
+-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror -pedantic")
++add_compile_options(-Wall -Wextra $<$<CONFIG:Debug>:-Werror>)
+ 
+ #set project name
+ project(vclog)
+-- 
+2.53.0
+
